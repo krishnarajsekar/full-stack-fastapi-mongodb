@@ -1,0 +1,48 @@
+name: Deploy UAT
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to EC2 UAT
+    runs-on: [self-hosted, Linux, X64]
+
+    steps:
+      - name: Deploy application
+        run: |
+          set -e
+
+          echo "======================================"
+          echo "Starting UAT deployment"
+          echo "======================================"
+
+          cd /home/ubuntu/fullstackapp
+
+          echo "Current directory:"
+          pwd
+
+          echo "Checking Git status..."
+          git status
+
+          echo "Pulling latest code from main..."
+          git fetch origin main
+          git reset --hard origin/main
+
+          echo "Building Docker containers..."
+          docker compose build
+
+          echo "Starting Docker containers..."
+          docker compose up -d
+
+          echo "Removing unused Docker images..."
+          docker image prune -f
+
+          echo "Checking Docker containers..."
+          docker compose ps
+
+          echo "======================================"
+          echo "UAT deployment completed successfully"
+          echo "======================================"
