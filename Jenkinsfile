@@ -21,20 +21,6 @@ pipeline {
             }
         }
 
-        stage('Git Pull') {
-            steps {
-                sh '''
-                    cd $PROJECT_DIR
-
-                    git fetch origin
-                    git reset --hard origin/main
-                    git clean -fd
-
-                    echo "Latest commit:"
-                    git log -1 --oneline
-                '''
-            }
-        }
 
         stage('Validate Docker Compose') {
             steps {
